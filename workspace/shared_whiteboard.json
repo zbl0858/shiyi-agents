@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "",
+  "date": "",
+  
+  "sales": {
+    "yesterday": {
+      "amount_cent": 0,
+      "order_count": 0,
+      "avg_price_cent": 0,
+      "refund_cent": 0
+    },
+    "today_target_cent": 300000,
+    "today_current_cent": 0,
+    "trend": "stable"
+  },
+  
+  "inventory": {
+    "total_stock": 0,
+    "sku_count": 0,
+    "out_of_stock_count": 0,
+    "low_stock_items": [],
+    "slow_moving_items": [],
+    "overstock_items": []
+  },
+  
+  "customers": {
+    "new_members_today": 0,
+    "new_members_pending_followup": [],
+    "inactive_customers": [],
+    "vip_customers": [],
+    "birthday_today": []
+  },
+  
+  "tasks": {
+    "pending": [],
+    "in_progress": [],
+    "completed": [],
+    "cancelled": []
+  },
+  
+  "alerts": {
+    "high_priority": [],
+    "medium_priority": [],
+    "low_priority": []
+  }
+}
