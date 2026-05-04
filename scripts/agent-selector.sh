@@ -12,6 +12,9 @@ log() { echo "[$(date '+%H:%M:%S')] $1"; }
 
 log "开始生成今日选题..."
 
+# 显式加载 .env
+set -a && . "${REPO_ROOT}/.env" 2>/dev/null && set +a || true
+
 export GW_URL GW_TOKEN MAX_SELECTIONS CONTENT_WHITEBOARD
 python3 - <<'PY'
 import json
@@ -45,7 +48,7 @@ def fetch_view(view_name, params, agent_id):
         "agentId": agent_id,
         "viewName": view_name,
         "purpose": "content_selection",
-        "operator": {"wecomUserid": "content_pipeline", "role": "editor"},
+        "operator": {"wecomUserid": "content_pipeline", "role": "boss"},
         "params": params,
         "traceId": f"content_{agent_id}_{int(datetime.now().timestamp())}",
     }
@@ -259,7 +262,7 @@ if has_real_gateway_config():
                 "storeId": "ALL",
                 "limit": max_selections,
             },
-            "content_selector",
+            "data_analyst",
         )
     except Exception as exc:  # noqa: BLE001
         errors.append(f"sales.productRanking: {exc}")
@@ -268,7 +271,7 @@ if has_real_gateway_config():
         risk_payload = fetch_view(
             "product.inventoryRiskReport",
             {"storeId": "ALL", "limit": max(20, max_selections * 4)},
-            "content_selector",
+            "data_analyst",
         )
     except Exception as exc:  # noqa: BLE001
         errors.append(f"product.inventoryRiskReport: {exc}")
