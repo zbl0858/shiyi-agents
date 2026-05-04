@@ -2,3 +2,4 @@
 /tmp/
 *.swp
 .env
+workspace/content_whiteboard.json

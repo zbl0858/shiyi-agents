@@ -1,10 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # 任务管理脚本 - 用于更新任务状态
 # 用法: ./task-manager.sh complete <task_id>
 #       ./task-manager.sh list
 #       ./task-manager.sh add <category> <title> <detail> <assignee> <deadline>
 
-WHITEBOARD="/root/.openclaw/workspace/shared_whiteboard.json"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+. "${SCRIPT_DIR}/common.sh"
+
+WHITEBOARD="$WHITEBOARD_FILE"
+ensure_whiteboard "$WHITEBOARD"
 
 log() { echo "[$(date '+%H:%M:%S')] $1"; }
 

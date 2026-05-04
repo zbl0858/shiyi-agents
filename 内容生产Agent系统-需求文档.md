@@ -42,7 +42,7 @@
 ### 2.1 文件位置
 
 ```
-/root/.openclaw/workspace/content_whiteboard.json
+${REPO_ROOT}/workspace/content_whiteboard.json
 ```
 
 ### 2.2 数据结构
@@ -125,8 +125,8 @@
 
 **关键配置**：
 ```bash
-GW_URL="https://shiyi-prod-6gq3nx2d1a6978fd-1305154841.ap-shanghai.app.tcloudbase.com/agent-data-gateway"
-GW_TOKEN="fde858974fc37ea88e4a9b3d02e8995093959ec6698619d6c21bc68409bead69"
+GW_URL="https://your-cloudbase-domain/agent-data-gateway"
+GW_TOKEN="<GW_TOKEN>"
 MAX_SELECTIONS=3   # 最多推荐几款
 ```
 
@@ -303,15 +303,15 @@ echo "[$(date)] 流水线完成" >> $PIPELINE_LOG
 
 ```bash
 # agent_data_gateway
-GW_URL="https://shiyi-prod-6gq3nx2d1a6978fd-1305154841.ap-shanghai.app.tcloudbase.com/agent-data-gateway"
-GW_TOKEN="fde858974fc37ea88e4a9b3d02e8995093959ec6698619d6c21bc68409bead69"
+GW_URL="https://your-cloudbase-domain/agent-data-gateway"
+GW_TOKEN="<GW_TOKEN>"
 
 # DeepSeek API
 DS_API_KEY="<需要用户提供>"
 DS_API_URL="https://api.deepseek.com/v1/chat/completions"
 
 # 企微群
-CHAT_ID="wrZepjCQAAT711wN3p85BWnbqWJNMmyQ"
+CHATID="<WECOM_CHAT_ID>"
 ```
 
 ---

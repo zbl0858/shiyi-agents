@@ -1,11 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # 每日经营简报 vFinal
-# cron: 0 9 * * * /bin/bash /root/.openclaw/scripts/daily-briefing.sh
+# cron: 0 9 * * * /bin/bash /path/to/shiyi-agents/scripts/daily-briefing.sh
 # 流程：拉数据 → 生成简报 → AI 醒来时推到运营管理群
 
-GW_URL="https://shiyi-prod-6gq3nx2d1a6978fd-1305154841.ap-shanghai.app.tcloudbase.com/agent-data-gateway"
-GW_TOKEN="fde858974fc37ea88e4a9b3d02e8995093959ec6698619d6c21bc68409bead69"
-CHATID="wrZepjCQAAT711wN3p85BWnbqWJNMmyQ"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+. "${SCRIPT_DIR}/common.sh"
+
+require_env GW_URL GW_TOKEN CHATID
 
 YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
 TODAY=$(date '+%Y-%m-%d')
@@ -67,9 +69,6 @@ MSG="$MSG
 🏆 昨日热销 TOP 3
 ${TOP3:-（暂无销售数据）}"
 
-# 写入待推送文件
-echo "$MSG" > /tmp/daily_briefing_msg.txt
-echo "$CHATID" > /tmp/daily_briefing_target.txt
-echo "$(date +%s)" > /tmp/daily_briefing_pending.txt
+write_pending_message "$MSG" "$CHATID"
 
 log "✅ 简报已生成，等待推送至群 $CHATID"

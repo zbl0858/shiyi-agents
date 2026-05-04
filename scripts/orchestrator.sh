@@ -1,16 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # 总调度 Agent - 每日作战计划生成
 # 09:05 执行，汇总各 Agent 数据，生成任务列表
 
-GW_URL="https://shiyi-prod-6gq3nx2d1a6978fd-1305154841.ap-shanghai.app.tcloudbase.com/agent-data-gateway"
-GW_TOKEN="fde858974fc37ea88e4a9b3d02e8995093959ec6698619d6c21bc68409bead69"
-CHATID="wrZepjCQAAT711wN3p85BWnbqWJNMmyQ"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+. "${SCRIPT_DIR}/common.sh"
+
+require_env GW_URL GW_TOKEN CHATID
 
 YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
 TODAY=$(date '+%Y-%m-%d')
 DATE_LABEL=$(date '+%m月%d日')
 
-WHITEBOARD="/root/.openclaw/workspace/shared_whiteboard.json"
+WHITEBOARD="$WHITEBOARD_FILE"
+ensure_whiteboard "$WHITEBOARD"
 
 log() { echo "[$(date '+%H:%M:%S')] $1"; }
 
@@ -208,9 +211,6 @@ $MED_TASKS"
 💡 总调度建议：优先处理高优先级任务，确保今日目标达成"
 fi
 
-# 写入待推送文件
-echo "$MSG" > /tmp/daily_briefing_msg.txt
-echo "$CHATID" > /tmp/daily_briefing_target.txt
-echo "$(date +%s)" > /tmp/daily_briefing_pending.txt
+write_pending_message "$MSG" "$CHATID"
 
 log "✅ 作战计划已生成，${TASK_COUNT}项任务待执行"
