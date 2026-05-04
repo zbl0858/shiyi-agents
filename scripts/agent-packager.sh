@@ -166,7 +166,7 @@ if [ "$status" -ne 0 ]; then
 fi
 
 if [ -n "$package_message" ]; then
-  write_content_pending_message "$package_message" "${CHATID:-}"
+  write_content_pending_message "$package_message" "${CONTENT_CHATID:-${CHATID:-}}"
 fi
 
 log "打包 Agent 完成"
