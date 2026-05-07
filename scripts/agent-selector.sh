@@ -270,7 +270,7 @@ if has_real_gateway_config():
     try:
         risk_payload = fetch_view(
             "product.inventoryRiskReport",
-            {"storeId": "ALL", "limit": max(20, max_selections * 4)},
+            {"storeId": "ALL", "includeNormal": True, "limit": max(20, max_selections * 4)},
             "data_analyst",
         )
     except Exception as exc:  # noqa: BLE001
@@ -285,11 +285,41 @@ risk_by_id, risk_by_name = build_risk_lookup(risk_items)
 selected = []
 seen = set()
 
-for index, item in enumerate(ranking_items[:max_selections], start=1):
+# 热销入选：只选有库存的
+skipped_oos = 0
+for index, item in enumerate(ranking_items, start=1):
+    if len(selected) >= max_selections:
+        break
     risk_item = risk_by_id.get(str(item.get("productId"))) or risk_by_name.get(normalize_name(item))
+    stock = derive_stock(item, risk_item)
+    if stock == 0:
+        skipped_oos += 1
+        continue
     append_selection(selected, seen, item, f"昨日热销 TOP {index}", "primary", risk_item)
 
-overstock_items = [item for item in risk_items if item.get("riskType") == "overstock"]
+if skipped_oos > 0:
+    errors.append(f"跳过 {skipped_oos} 件热销但零库存商品")
+
+# 备选池：有库存但未入选的商品（可能是新品或正常库存款）
+normal_items = [
+    item for item in risk_items
+    if item.get("riskType") != "out_of_stock"
+    and item_key(item) not in seen
+    and normalize_name(item) not in seen
+]
+normal_items.sort(key=lambda x: -(x.get("stock") or 0))
+
+for item in normal_items:
+    if len(selected) >= max_selections:
+        break
+    append_selection(selected, seen, item, "有库存可推款", "primary", item)
+
+# 仍然不够，用超储清仓
+overstock_items = [
+    item for item in risk_items
+    if item.get("riskType") == "overstock"
+    and item_key(item) not in seen
+]
 for item in overstock_items:
     if len(selected) >= max_selections:
         break

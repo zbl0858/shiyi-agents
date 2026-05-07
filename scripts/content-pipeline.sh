@@ -4,6 +4,11 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 . "${SCRIPT_DIR}/common.sh"
 
+# 自动加载 .env
+set -a
+if [ -f "${REPO_ROOT}/.env" ]; then . "${REPO_ROOT}/.env"; fi
+set +a
+
 ensure_content_whiteboard "$CONTENT_WHITEBOARD_FILE"
 ensure_dir "$TMP_DIR"
 
