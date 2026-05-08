@@ -9,9 +9,9 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 require_env GW_URL GW_TOKEN CHATID
 
-YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
 TODAY=$(date '+%Y-%m-%d')
-DATE_LABEL=$(date -d "yesterday" '+%m月%d日')
+TOMORROW=$(date -d "tomorrow" '+%Y-%m-%d')
+DATE_LABEL=$(date '+%m月%d日')
 
 log() { echo "[$(date '+%H:%M:%S')] $1"; }
 
@@ -22,8 +22,8 @@ fetch_view() {
 }
 
 log "拉取数据..."
-BRIEF=$(fetch_view "business.dailySnapshot" "{\"dateRange\":{\"start\":\"$YESTERDAY\",\"end\":\"$TODAY\"},\"storeId\":\"ALL\"}" "daily_$(date +%s)")
-RANKING=$(fetch_view "sales.productRanking" "{\"dateRange\":{\"start\":\"$YESTERDAY\",\"end\":\"$TODAY\"},\"storeId\":\"ALL\"}" "rk_$(date +%s)")
+BRIEF=$(fetch_view "business.dailySnapshot" "{\"dateRange\":{\"start\":\"$TODAY\",\"end\":\"$TOMORROW\"},\"storeId\":\"ALL\"}" "daily_$(date +%s)")
+RANKING=$(fetch_view "sales.productRanking" "{\"dateRange\":{\"start\":\"$TODAY\",\"end\":\"$TOMORROW\"},\"storeId\":\"ALL\"}" "rk_$(date +%s)")
 RISK=$(fetch_view "product.inventoryRiskReport" "{\"storeId\":\"ALL\"}" "risk_$(date +%s)")
 
 SALES=$(echo "$BRIEF" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('data',{}).get('summary',{}).get('salesAmountCent',0))" 2>/dev/null || echo 0)
