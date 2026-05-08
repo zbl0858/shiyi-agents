@@ -3,3 +3,5 @@
 *.swp
 .env
 workspace/content_whiteboard.json
+__pycache__/
+*.pyc
