@@ -66,7 +66,7 @@ MSG="📊 时一服装店 · ${DATE_LABEL} 经营简报
 
 MSG="$MSG
 
-🏆 昨日热销 TOP 3
+🏆 今日热销 TOP 3
 ${TOP3:-（暂无销售数据）}"
 
 write_pending_message "$MSG" "$CHATID"
