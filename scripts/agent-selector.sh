@@ -329,6 +329,20 @@ if not selected:
     selected = build_demo_selection(max_selections)
     used_demo_data = True
 
+# 价格补齐：inventoryRiskReport 不含价格，通过 product.detail 获取
+if has_real_gateway_config() and not used_demo_data:
+    for record in selected:
+        pid = record.get("id")
+        if not pid or record.get("price_yuan", 0) > 0:
+            continue
+        try:
+            detail = fetch_view("product.detail", {"productId": pid, "storeId": "ALL"}, "data_analyst")
+            price_cent = detail.get("data", {}).get("summary", {}).get("price", 0)
+            if price_cent and price_cent > 0:
+                record["price_yuan"] = max(1, round(price_cent / 100))
+        except Exception:
+            pass
+
 whiteboard = load_json(whiteboard_path)
 whiteboard["version"] = whiteboard.get("version", "1.0")
 whiteboard["date"] = today.strftime("%Y-%m-%d")
